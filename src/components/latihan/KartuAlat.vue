@@ -1,5 +1,4 @@
-﻿
-<script setup>
+﻿<script setup>
 // Props: data yang dikirim dari komponen induk
 defineProps({
   kode: { type: String, required: true },
@@ -34,18 +33,8 @@ const labelKondisi = {
 
     <p v-if="tersedia === 0" class="label-habis">Stok habis</p>
 
-    <button
-      @click="emit('kembali', kode)"
-      :disabled="tersedia >= total"
-    >
-      Kembalikan 1 unit
-    </button>
-    <button
-      :disabled="tersedia === 0"
-      @click="emit('pinjam', kode)"
-    >
-      Pinjam 1 unit
-    </button>
+    <button @click="emit('kembali', kode)" :disabled="tersedia >= total">Kembalikan 1 unit</button>
+    <button :disabled="tersedia === 0" @click="emit('pinjam', kode)">Pinjam 1 unit</button>
   </article>
 </template>
 
@@ -113,4 +102,3 @@ button:disabled {
   cursor: not-allowed;
 }
 </style>
-

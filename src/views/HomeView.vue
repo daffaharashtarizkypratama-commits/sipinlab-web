@@ -71,7 +71,13 @@ function kembali(kode) {
     <p class="ketikan">Anda mengetik: "{{ kataKunci }}"</p>
 
     <div class="grid">
-      <KartuAlat v-for="alat in alatTampil" :key="alat.kode" v-bind="alat" @pinjam="pinjam" @kembali="kembali" />
+      <KartuAlat
+        v-for="alat in alatTampil"
+        :key="alat.kode"
+        v-bind="alat"
+        @pinjam="pinjam"
+        @kembali="kembali"
+      />
     </div>
 
     <p v-if="alatTampil.length === 0">Alat tidak ditemukan.</p>
@@ -104,5 +110,3 @@ function kembali(kode) {
   gap: 16px;
 }
 </style>
-
-
