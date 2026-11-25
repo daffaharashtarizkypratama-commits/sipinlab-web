@@ -1,3 +1,4 @@
+
 <script setup>
 // Props: data yang dikirim dari komponen induk
 defineProps({
@@ -5,21 +6,40 @@ defineProps({
   nama: { type: String, required: true },
   tersedia: { type: Number, default: 0 },
   total: { type: Number, default: 0 },
+  kondisi: { type: String, default: 'baik' },
 })
 
 // Emit: cara komponen anak "memberi tahu" induknya
 const emit = defineEmits(['pinjam'])
+
+const labelKondisi = {
+  baik: 'Baik',
+  rusak_ringan: 'Rusak Ringan',
+  rusak_berat: 'Rusak Berat',
+}
 </script>
 
 <template>
   <article class="kartu" :class="{ habis: tersedia === 0 }">
     <span class="kode">{{ kode }}</span>
     <h3>{{ nama }}</h3>
+
+    <span class="label-kondisi" :class="kondisi">
+      {{ labelKondisi[kondisi] || 'Tidak diketahui' }}
+    </span>
+
     <p>
       Tersedia <strong>{{ tersedia }}</strong> dari {{ total }} unit
     </p>
+
     <p v-if="tersedia === 0" class="label-habis">Stok habis</p>
-    <button :disabled="tersedia === 0" @click="emit('pinjam', kode)">Pinjam 1 unit</button>
+
+    <button
+      :disabled="tersedia === 0"
+      @click="emit('pinjam', kode)"
+    >
+      Pinjam 1 unit
+    </button>
   </article>
 </template>
 
@@ -42,6 +62,29 @@ const emit = defineEmits(['pinjam'])
 
 h3 {
   margin: 4px 0 8px;
+}
+
+.label-kondisi {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.baik {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.rusak_ringan {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.rusak_berat {
+  color: #991b1b;
+  background: #fee2e2;
 }
 
 .label-habis {
