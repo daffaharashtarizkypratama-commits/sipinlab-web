@@ -1,4 +1,4 @@
-
+﻿
 <script setup>
 // Props: data yang dikirim dari komponen induk
 defineProps({
@@ -10,7 +10,7 @@ defineProps({
 })
 
 // Emit: cara komponen anak "memberi tahu" induknya
-const emit = defineEmits(['pinjam'])
+const emit = defineEmits(['pinjam', 'kembali'])
 
 const labelKondisi = {
   baik: 'Baik',
@@ -34,6 +34,12 @@ const labelKondisi = {
 
     <p v-if="tersedia === 0" class="label-habis">Stok habis</p>
 
+    <button
+      @click="emit('kembali', kode)"
+      :disabled="tersedia >= total"
+    >
+      Kembalikan 1 unit
+    </button>
     <button
       :disabled="tersedia === 0"
       @click="emit('pinjam', kode)"
@@ -107,3 +113,4 @@ button:disabled {
   cursor: not-allowed;
 }
 </style>
+

@@ -52,6 +52,12 @@ function pinjam(kode) {
   const alat = daftarAlat.value.find((a) => a.kode === kode)
   if (alat && alat.tersedia > 0) alat.tersedia--
 }
+
+// 5. Fungsi: dipanggil ketika komponen anak mengirim event "kembali"
+function kembali(kode) {
+  const alat = daftarAlat.value.find((a) => a.kode === kode)
+  if (alat && alat.tersedia < alat.total) alat.tersedia++
+}
 </script>
 
 <template>
@@ -65,7 +71,7 @@ function pinjam(kode) {
     <p class="ketikan">Anda mengetik: "{{ kataKunci }}"</p>
 
     <div class="grid">
-      <KartuAlat v-for="alat in alatTampil" :key="alat.kode" v-bind="alat" @pinjam="pinjam" />
+      <KartuAlat v-for="alat in alatTampil" :key="alat.kode" v-bind="alat" @pinjam="pinjam" @kembali="kembali" />
     </div>
 
     <p v-if="alatTampil.length === 0">Alat tidak ditemukan.</p>
@@ -98,4 +104,5 @@ function pinjam(kode) {
   gap: 16px;
 }
 </style>
+
 
