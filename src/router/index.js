@@ -12,6 +12,7 @@ const routes = [
   {
     path: '/',
     component: AppLayout,
+    meta: { title: 'SIPINLAB' },
     children: [
       {
         path: '',
@@ -56,6 +57,12 @@ const routes = [
         component: () => import('@/views/peminjaman/PeminjamanFormView.vue'),
         meta: { title: 'Catat Peminjaman' },
       },
+      {
+        path: 'profil',
+        name: 'profil',
+        component: () => import('@/views/ProfileView.vue'),
+        meta: { title: 'Profil' },
+      },
     ],
   },
   {
@@ -79,3 +86,5 @@ router.afterEach((to) => {
 })
 
 export default router
+
+

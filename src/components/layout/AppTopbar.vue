@@ -1,5 +1,6 @@
 ﻿<script setup>
-import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import AppIcon from '@/components/base/AppIcon.vue'
 import StatusBadge from '@/components/base/StatusBadge.vue'
 
@@ -12,6 +13,13 @@ defineProps({
 
 const emit = defineEmits(['toggle-menu'])
 const router = useRouter()
+const route = useRoute()
+
+const breadcrumb = computed(() =>
+  route.matched
+    .filter((record) => record.meta?.title)
+    .map((record) => record.meta.title),
+)
 
 // Sementara memakai data tetap. Pada Modul 6 diganti data dari store Pinia.
 const user = {
@@ -34,7 +42,24 @@ function keluar() {
       <AppIcon name="menu" />
     </button>
 
-    <h2 class="title">{{ title }}</h2>
+    <div class="heading">
+      <h2 class="title">{{ title }}</h2>
+
+      <nav
+        v-if="breadcrumb.length"
+        class="breadcrumb"
+        aria-label="Breadcrumb"
+      >
+        <span
+          v-for="(item, index) in breadcrumb"
+          :key="index"
+          class="breadcrumb-item"
+        >
+          <span v-if="index > 0" class="separator">/</span>
+          {{ item }}
+        </span>
+      </nav>
+    </div>
 
     <div class="user">
       <div class="user-info">
@@ -56,11 +81,11 @@ function keluar() {
 
 <style scoped>
 .topbar {
-  height: var(--topbar-height);
+  min-height: var(--topbar-height);
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: 0 var(--space-5);
+  padding: var(--space-3) var(--space-5);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
@@ -68,18 +93,36 @@ function keluar() {
   z-index: 20;
 }
 
-.menu-btn {
-  display: none;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  color: var(--color-text);
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .title {
+  margin: 0;
   font-size: var(--font-size-md);
   font-weight: 600;
   color: var(--color-text-muted);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.separator {
+  color: var(--color-border);
 }
 
 .user {
@@ -127,6 +170,10 @@ function keluar() {
 @media (max-width: 960px) {
   .menu-btn {
     display: block;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    color: var(--color-text);
   }
 }
 
@@ -137,7 +184,7 @@ function keluar() {
   }
 
   .topbar {
-    padding: 0 var(--space-4);
+    padding: var(--space-3) var(--space-4);
   }
 }
 </style>

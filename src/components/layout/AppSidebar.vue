@@ -22,6 +22,7 @@ const menu = [
   { to: '/alat', label: 'Data Alat', icon: 'box' },
   { to: '/kategori', label: 'Kategori', icon: 'tag' },
   { to: '/peminjaman', label: 'Peminjaman', icon: 'clipboard' },
+  { to: '/profil', label: 'Profil', icon: 'dashboard' },
 ]
 </script>
 
@@ -128,3 +129,4 @@ nav {
   }
 }
 </style>
+
