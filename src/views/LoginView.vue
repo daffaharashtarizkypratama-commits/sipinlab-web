@@ -1,16 +1,44 @@
 ﻿<script setup>
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { galatValidasi, pesanGalat } from '@/utils/errors'
 import BaseInput from '@/components/base/BaseInput.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
+import AlertMessage from '@/components/base/AlertMessage.vue'
 import logo from '@/assets/logo.svg'
 
+const auth = useAuthStore()
 const router = useRouter()
-const form = reactive({ email: '', password: '' })
+const route = useRoute()
 
-// Sementara navigasi langsung ke Dasbor. Autentikasi API dibuat di Modul 6.
-function masuk() {
-  router.push({ name: 'dashboard' })
+const form = reactive({ email: '', password: '' })
+const errors = ref({})
+const pesan = ref(
+  route.query.sesi === 'habis'
+    ? 'Sesi Anda berakhir. Silakan masuk kembali.'
+    : '',
+)
+const loading = ref(false)
+
+async function masuk() {
+  loading.value = true
+  errors.value = {}
+  pesan.value = ''
+
+  try {
+    await auth.login(form.email, form.password)
+
+    router.push(route.query.redirect || { name: 'dashboard' })
+  } catch (error) {
+    errors.value = galatValidasi(error)
+
+    if (!Object.keys(errors.value).length) {
+      pesan.value = pesanGalat(error)
+    }
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -32,11 +60,14 @@ function masuk() {
         <h2>Masuk</h2>
         <p class="text-muted">Gunakan akun petugas laboratorium Anda.</p>
 
+        <AlertMessage :message="pesan" type="warning" />
+
         <BaseInput
           v-model="form.email"
           label="Surel"
           type="email"
           placeholder="nama@sipinlab.test"
+          :error="errors.email?.[0] || ''"
           required
         />
 
@@ -45,13 +76,17 @@ function masuk() {
           label="Kata sandi"
           type="password"
           placeholder="••••••••"
+          :error="errors.password?.[0] || ''"
           required
         />
 
-        <BaseButton type="submit" block>Masuk</BaseButton>
+        <BaseButton type="submit" :loading="loading" block>
+          Masuk
+        </BaseButton>
 
         <p class="demo">
-          Akun latihan: <code>admin@sipinlab.test</code> / <code>password</code>
+          Akun latihan: <code>admin@sipinlab.test</code> /
+          <code>password</code>
         </p>
       </form>
     </section>

@@ -1,4 +1,5 @@
 ﻿import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import AppLayout from '@/layouts/AppLayout.vue'
 import LoginView from '@/views/LoginView.vue'
 
@@ -7,12 +8,12 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView,
-    meta: { title: 'Masuk' },
+    meta: { title: 'Masuk', guest: true },
   },
   {
     path: '/',
     component: AppLayout,
-    meta: { title: 'SIPINLAB' },
+    meta: { title: 'SIPINLAB', requiresAuth: true },
     children: [
       {
         path: '',
@@ -79,6 +80,19 @@ const router = createRouter({
   scrollBehavior: () => ({ top: 0 }),
 })
 
+// Melindungi halaman berdasarkan status autentikasi.
+router.beforeEach((to) => {
+  const auth = useAuthStore()
+
+  if (to.matched.some((r) => r.meta.requiresAuth) && !auth.isLoggedIn) {
+    return { name: 'login', query: { redirect: to.fullPath } }
+  }
+
+  if (to.meta.guest && auth.isLoggedIn) {
+    return { name: 'dashboard' }
+  }
+})
+
 router.afterEach((to) => {
   document.title = to.meta.title
     ? `${to.meta.title} · SIPINLAB`
@@ -86,5 +100,3 @@ router.afterEach((to) => {
 })
 
 export default router
-
-

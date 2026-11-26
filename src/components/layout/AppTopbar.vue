@@ -1,6 +1,7 @@
 ﻿<script setup>
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import AppIcon from '@/components/base/AppIcon.vue'
 import StatusBadge from '@/components/base/StatusBadge.vue'
 
@@ -12,6 +13,7 @@ defineProps({
 })
 
 const emit = defineEmits(['toggle-menu'])
+const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -21,13 +23,8 @@ const breadcrumb = computed(() =>
     .map((record) => record.meta.title),
 )
 
-// Sementara memakai data tetap. Pada Modul 6 diganti data dari store Pinia.
-const user = {
-  name: 'Admin Laboratorium',
-  role: 'admin',
-}
-
-function keluar() {
+async function keluar() {
+  await auth.logout()
   router.push({ name: 'login' })
 }
 </script>
@@ -63,12 +60,12 @@ function keluar() {
 
     <div class="user">
       <div class="user-info">
-        <strong>{{ user.name }}</strong>
-        <StatusBadge :value="user.role" />
+        <strong>{{ auth.user?.name }}</strong>
+        <StatusBadge v-if="auth.user" :value="auth.user.role" />
       </div>
 
       <div class="avatar" aria-hidden="true">
-        {{ user.name.charAt(0) }}
+        {{ auth.user?.name?.charAt(0) }}
       </div>
 
       <button class="logout" title="Keluar" @click="keluar">
