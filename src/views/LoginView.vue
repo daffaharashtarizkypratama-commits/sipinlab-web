@@ -1,14 +1,16 @@
 ﻿<script setup>
 import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import BaseInput from '@/components/base/BaseInput.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 import logo from '@/assets/logo.svg'
 
+const router = useRouter()
 const form = reactive({ email: '', password: '' })
 
-// Sementara hanya menampilkan isian. Proses masuk ke API dibuat di Modul 6.
+// Sementara navigasi langsung ke Dasbor. Autentikasi API dibuat di Modul 6.
 function masuk() {
-  alert(`Surel: ${form.email}\nProses masuk ke API dibuat di Modul 6.`)
+  router.push({ name: 'dashboard' })
 }
 </script>
 
@@ -48,7 +50,9 @@ function masuk() {
 
         <BaseButton type="submit" block>Masuk</BaseButton>
 
-        <p class="demo">Akun latihan: <code>admin@sipinlab.test</code> / <code>password</code></p>
+        <p class="demo">
+          Akun latihan: <code>admin@sipinlab.test</code> / <code>password</code>
+        </p>
       </form>
     </section>
   </div>
